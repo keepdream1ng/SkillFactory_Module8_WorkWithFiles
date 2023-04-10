@@ -40,9 +40,14 @@ namespace Task1
                     }
                 }
             }
-            catch(Exception ex)
+            catch(UnauthorizedAccessException ex)
             {
                 Console.WriteLine("Error: No acces to the folder");
+            }
+            
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
             }
 
             // Files get checked if they are old or not and get deleted if they are.
@@ -57,9 +62,14 @@ namespace Task1
                     }
                 }
             }
-            catch(Exception ex)
+            catch(UnauthorizedAccessException ex)
             {
                 Console.WriteLine("Error: No acces to the file");
+            }
+
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
             }
 
             return 0;
