@@ -8,6 +8,8 @@ namespace Task1
         static int Main(string[] args)
         {
             string? inputPath;
+            TimeSpan TimeNotUsedFor = TimeSpan.FromMinutes(30);
+
             if (args.Length == 0)
             {
                 Console.WriteLine("Incert path to the folder for cleaning or use it as an argument next time you run programm.");
@@ -26,12 +28,40 @@ namespace Task1
                 return 1;
             }
 
-            string[] folders = Directory.GetDirectories(inputPath);
-            foreach (string folder in folders)
+            // Folders get checked if they are old or not and get deleted if they are.
+            try
             {
-                Console.WriteLine(Directory.GetCreationTime(folder));
+                string[] folders = Directory.GetDirectories(inputPath);
+                foreach (string folder in folders)
+                {
+                    if (DateTime.Now.Subtract(Directory.GetLastAccessTime(folder)) > TimeNotUsedFor)
+                    {
+                        Directory.Delete(folder, true);
+                    }
+                }
             }
-            Console.WriteLine(inputPath);
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error: No acces to the folder");
+            }
+
+            // Files get checked if they are old or not and get deleted if they are.
+            try
+            {
+                string[] files = Directory.GetFiles(inputPath);
+                foreach (string file in files)
+                {
+                    if (DateTime.Now.Subtract(File.GetLastAccessTime(file)) > TimeNotUsedFor)
+                    {
+                        File.Delete(file);
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error: No acces to the file");
+            }
+
             return 0;
         }
     }
