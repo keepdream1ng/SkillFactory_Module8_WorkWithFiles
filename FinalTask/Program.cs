@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace FinalTask
 {
@@ -26,19 +27,30 @@ namespace FinalTask
                 {
                     throw new FileNotFoundException($"Error, file {inputPath} does not exist");
                 }
+
                 BinaryFormatter formatter = new();
+                Student[] Students;
+                // Binary file has an student array in it, we are getting it inside using.
                 using (var fs = new FileStream(inputPath, FileMode.Open))
                 {
-                    Student[] Students = (Student[])formatter.Deserialize(fs);
-
-                    // For now it prints deserialized objects.
-                    foreach (var student in Students)
-                    {
-                        Console.WriteLine(student);
-                    }
+                    Students = (Student[])formatter.Deserialize(fs);
                 }
-
+ 
+                // Next method creates Group objects based on Student properties.
+                Group.GroupStudentsArr(Students);
                 DirectoryInfo StudentsFolder = CreateDesktopDir("Students");
+
+                // Now we can create a file for each group.
+                foreach (Group group in Group.GroupList)
+                {
+                    inputPath = Path.Combine(StudentsFolder.FullName, group.Name);
+                    using (StreamWriter sw = File.CreateText($"{inputPath}.txt"))
+                    {
+                        sw.Write(group.GetGroupListString());
+                    }
+                    Console.WriteLine($"File {inputPath}.txt is created.");
+                }
+                
             }
             catch (Exception ex)
             {
@@ -48,25 +60,12 @@ namespace FinalTask
 
         public static DirectoryInfo CreateDesktopDir(string dir)
         {
-            string NewPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory),dir);
+            string NewPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory),dir);
             if (Directory.Exists(NewPath))
             {
                 return new DirectoryInfo(NewPath);
             }
             return Directory.CreateDirectory(NewPath);
-        }
-    }
-
-    [Serializable]
-    public class Student
-    {
-        public string Name { get; set; }
-        public string Group { get; set; }
-        public DateTime DateOfBirth { get; set; }
-
-        public override string ToString()
-        {
-            return $"{Name}, {DateOfBirth}";
         }
     }
 }
