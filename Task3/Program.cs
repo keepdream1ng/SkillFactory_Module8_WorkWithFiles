@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-// Cant start using Task2 for some reason.
+using static Task2.Task2;
 
 namespace Task3
 {
@@ -10,6 +10,10 @@ namespace Task3
         {
             string? inputPath;
             TimeSpan TimeNotUsedFor = TimeSpan.FromMinutes(30);
+            long DirectorySize;
+            long CleanDirectorySize;
+            int dirCount = 0;
+            int fileCount = 0;
 
             if (args.Length == 0)
             {
@@ -22,15 +26,22 @@ namespace Task3
                 inputPath = args[0];
             }
 
+            DirectorySize = DirSize(inputPath);
+
+            Console.WriteLine($"Folder size before cleaning {DirectorySize} bites");
+
             // Folders get checked if they are old or not and get deleted if they are.
             try
             {
                 string[] folders = Directory.GetDirectories(inputPath);
                 foreach (string folder in folders)
                 {
-                    if (DateTime.Now.Subtract(Directory.GetLastAccessTime(folder)) > TimeNotUsedFor)
+                    // I found GetLastAccessTime for directories to work incorrectly, maybe its windows explorer fault.
+                    // So I swithed to last write time gor folders.
+                    if (DateTime.Now.Subtract(Directory.GetLastWriteTime(folder)) > TimeNotUsedFor)
                     {
                         Directory.Delete(folder, true);
+                        if (!Directory.Exists(folder)) dirCount++;
                     }
                 }
             }
@@ -53,8 +64,14 @@ namespace Task3
                     if (DateTime.Now.Subtract(File.GetLastAccessTime(file)) > TimeNotUsedFor)
                     {
                         File.Delete(file);
+                        if (!File.Exists(file)) fileCount++;
                     }
                 }
+
+                CleanDirectorySize = DirSize(inputPath);
+                Console.WriteLine($"Program deleted {dirCount} directories and {fileCount} files");
+                Console.WriteLine($"Freed up disk space: {DirectorySize - CleanDirectorySize} bites");
+                Console.WriteLine($"Current directory size: {CleanDirectorySize} bites");
             }
             catch(UnauthorizedAccessException ex)
             {

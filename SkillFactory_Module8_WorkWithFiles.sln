@@ -8,8 +8,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Task2", "Task2\Task2.csproj", "{9D78E8EE-019C-413E-8C14-92DB2562E422}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Task3", "Task3\Task3.csproj", "{C3C8266E-4EC9-4D51-81CB-5667A3A0FD1A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9D78E8EE-019C-413E-8C14-92DB2562E422} = {9D78E8EE-019C-413E-8C14-92DB2562E422}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinalTask", "FinalTask\FinalTask.csproj", "{26B8A2DF-FD98-4091-8292-482EDE0C2C0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinalTask", "FinalTask\FinalTask.csproj", "{26B8A2DF-FD98-4091-8292-482EDE0C2C0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
